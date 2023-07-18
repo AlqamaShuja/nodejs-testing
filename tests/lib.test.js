@@ -1,4 +1,6 @@
 const lib = require("../lib");
+const db = require("../db");
+const mail = require("../mail");
 
 describe("absolute", () => {
     it("absolute - return positive if inp is positive", ()=>{
@@ -60,5 +62,70 @@ describe("getProduct", () => {
 
         // Check fot single proprty
         expect(result).toHaveProperty("id", 1)
+    })
+})
+
+describe("registerUser", () => {
+    it("should return object of user if input is string (name)", () => {
+        const result = lib.registerUser("alqama");
+        expect(result).toMatchObject({ username: "alqama" });
+        expect(result.id).toBeGreaterThan(0);
+    });
+
+    it("should return Exception if no input is falsy", () => {
+        const args = [null, undefined, NaN, 0, false, ""];
+        args.forEach(a => {
+            expect(() => { lib.registerUser(a) }).toThrow();
+        })
+    })
+})
+
+describe("applyDiscount", () => {
+    it("should apply 10% discount if customer has more than 10 points", () => {
+        db.getCustomerSync = function(customerId){
+            console.log("Reading fake customer...");
+            return { id: customerId, points: 20 };
+        }
+        const order = { customerId: 11, totalPrice: 10 };
+        const result = lib.applyDiscount(order);
+        expect(order.totalPrice).toBe(9);
+    });
+})
+
+describe("notifyCustomer", () => {
+    it("should send an email to the customer", async () => {
+
+        // const mockFunction = jest.fn();
+        // // return from mock function
+        // mockFunction.mockReturnValue(1);
+        // // return promise
+        // mockFunction.mockResolvedValue(1);
+        // mockFunction.mockRejectedValue(new Error("msg"));
+        // try {
+        //     const result = await mockFunction();
+        // } catch (error) {
+            
+        // }
+
+        db.getCustomerSync = jest.fn().mockReturnValue({ email: 'a' });
+
+        // db.getCustomerSync = function(customerId){
+        //     return { id: customerId, email: 'a' };
+        // }
+
+        mail.send = jest.fn();
+        // let emailSent = false;
+        // mail.send = function(email, message) {
+        //     emailSent = true;
+        // }
+
+        lib.notifyCustomer({ customerId: 1 });
+
+        // expect(emailSent).toBe(true);
+        expect(mail.send).toHaveBeenCalled(); // when no arg pass
+        // expect(mail.send).toHaveBeenCalledWith("a", "...");    // when arg pass
+        // expect(mail.send.mock.calls[0][0]).toBe("a");    // when arg pass
+        // expect(mail.send.mock.calls[0][1]).toBe(/order/);    // when arg pass
+
     })
 })

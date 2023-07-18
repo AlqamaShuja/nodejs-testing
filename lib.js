@@ -1,5 +1,5 @@
-// const db = require('./db');
-// const mail = require('./mail');
+const db = require('./db');
+const mail = require('./mail');
 
 // Testing numbers 
 module.exports.absolute = function(number) {
@@ -22,24 +22,24 @@ module.exports.getProduct = function(productId) {
   return { id: productId, price: 10 };
 }
 
-// // Testing exceptions 
-// module.exports.registerUser = function(username) { 
-//   if (!username) throw new Error('Username is required.');
+// Testing exceptions 
+module.exports.registerUser = function(username) { 
+  if (!username) throw new Error('Username is required.');
 
-//   return { id: new Date().getTime(), username: username }
-// }
+  return { id: new Date().getTime(), username: username }
+}
 
-// // Mock functions 
-// module.exports.applyDiscount = function(order) { 
-//   const customer = db.getCustomerSync(order.customerId);
+// Mock functions 
+module.exports.applyDiscount = function(order) { 
+  const customer = db.getCustomerSync(order.customerId);
 
-//   if (customer.points > 10) 
-//     order.totalPrice *= 0.9; 
-// }
+  if (customer.points > 10) 
+    order.totalPrice *= 0.9; 
+}
 
-// // Mock functions 
-// module.exports.notifyCustomer = function(order) { 
-//   const customer = db.getCustomerSync(order.customerId);
+// Mock functions 
+module.exports.notifyCustomer = function(order) { 
+  const customer = db.getCustomerSync(order.customerId);
 
-//   mail.send(customer.email, 'Your order was placed successfully.');
-// }
+  mail.send(customer.email, 'Your order was placed successfully.');
+}
